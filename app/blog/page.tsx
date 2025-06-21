@@ -49,7 +49,7 @@ export default function Blogs() {
               Whether it's faith, culture, or current events, we aim to uplift
               and inspire through knowledge and connection.
             </p>
-            <button className="border-none bg-green-400 hover:bg-green-500 w-full -mt-17 md:w-[180px] h-12 rounded-lg text-white transition-colors">
+            <button className="border-none bg-gradient-to-r border-2 border-white from-[#33A9E0] to-[#2E2AB1] hover:bg-green-500 w-full -mt-17 md:w-[180px] h-12 rounded-lg text-white transition-colors">
               Read Our Latest Posts
             </button>
           </div>
@@ -100,15 +100,15 @@ export default function Blogs() {
                 {post.title}
               </p>
               <p className="text-gray-700 mb-6">{post.content}</p>
-              <button className="border-none bg-green-400 w-[140px] h-12 rounded-lg text-white hover:bg-green-500 transition-colors">
+              <button className="border-none bg-gradient-to-r from-[#2E2AB1] to-[#33A9E0] w-[140px] h-12 rounded-lg text-white hover:bg-green-500 transition-colors">
                 Read More
               </button>
             </div>
           </div>
         ))} 
           <div className="flex ml-[1105px]">
-            <button className="border-none bg-green-400 w-[140px] h-12 rounded-lg text-white hover:bg-green-500 transition-colors">
-                Read More
+            <button className="border-none bg-gradient-to-r from-[#2E2AB1] to-[#33A9E0] w-[140px] h-12 rounded-lg text-white hover:bg-green-500 transition-colors">
+                See All
               </button>
           </div>
 
