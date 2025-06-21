@@ -105,7 +105,13 @@ export default function Blogs() {
               </button>
             </div>
           </div>
-        ))}
+        ))} 
+          <div className="flex ml-[1105px]">
+            <button className="border-none bg-green-400 w-[140px] h-12 rounded-lg text-white hover:bg-green-500 transition-colors">
+                Read More
+              </button>
+          </div>
+
       </div>
 
       <div>
