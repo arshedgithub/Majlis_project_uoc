@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Blogs() {
+  const router = useRouter();
   const blogPosts = [
     {
       id: 1,
@@ -31,9 +34,23 @@ export default function Blogs() {
         "In our digital age, maintaining spiritual connection can be challenging. This post offers guidance on using technology mindfully while preserving our Islamic values and daily worship practices.",
       image: "/images/education.png",
     },
-
   ];
 
+  const handleLatestBlogClick = () => {
+    const latestBlogSection = document.getElementById("latest-insights");
+    if (latestBlogSection) {
+      latestBlogSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleReadMoreClick = (postId: number) => {
+    router.push(`/blogs/${postId}`);
+  };
+
+  const handleSeeAllClick = () => {
+    router.push("/blogs/all");
+  };
+  
   return (
     <>
       <div className="relative flex flex-col w-full h-[475px] bg-gray-100 bg-gradient-to-r from-[#2E2AB1] to-[#33A9E0] overflow-hidden">
@@ -49,9 +66,12 @@ export default function Blogs() {
               Whether it's faith, culture, or current events, we aim to uplift
               and inspire through knowledge and connection.
             </p>
-            <button className="border-none bg-gradient-to-r border-2 border-white from-[#33A9E0] to-[#2E2AB1] hover:bg-green-500 w-full -mt-17 md:w-[180px] h-12 rounded-lg text-white transition-colors">
-              Read Our Latest Posts
-            </button>
+            <Button 
+              className="bg-white text-[#2E2AB1] hover:bg-blue-400 hover:text-white"
+              onClick={handleLatestBlogClick}
+            >
+              Read Our Latest Blog
+            </Button>
           </div>
           <div className="w-full md:w-1/2 flex justify-end items-end pt-23 ml-25 -mt-10">
             <img
@@ -61,22 +81,9 @@ export default function Blogs() {
             />
           </div>
         </div>
-
-        {/* Wave SVG */}
-        {/* <div className="absolute bottom-0 left-0 right-0 -mb-">
-          <svg
-            viewBox="0 0 1440 120"
-            preserveAspectRatio="none"
-            className="w-full h-20 md:h-32"
-          >
-            <path
-              fill="#ffffff"
-              d="M0,0 C360,100 1080,100 1440,0 L1440,120 L0,120 Z"
-            ></path>
-          </svg>
-        </div> */}
       </div>
-      <div className="flex flex-col bg-[#EFF5FD] pb-20">
+      
+      <div className="flex flex-col bg-[#EFF5FD] pb-20" id="latest-insights">
         <h1 className="flex text-4xl items-center justify-center text-[#33A9E0] py-12">
           Latest Insights
         </h1>
@@ -100,62 +107,44 @@ export default function Blogs() {
                 {post.title}
               </p>
               <p className="text-gray-700 mb-6">{post.content}</p>
-              <button className="border-none bg-gradient-to-r from-[#2E2AB1] to-[#33A9E0] w-[140px] h-12 rounded-lg text-white hover:bg-green-500 transition-colors">
+              <Button 
+                className="bg-gradient-to-r from-[#2E2AB1] to-[#33A9E0]"
+                onClick={() => handleReadMoreClick(post.id)}
+              >
                 Read More
-              </button>
+              </Button>
             </div>
           </div>
         ))} 
-          <div className="flex ml-[1105px]">
-            <button className="border-none bg-gradient-to-r from-[#2E2AB1] to-[#33A9E0] w-[140px] h-12 rounded-lg text-white hover:bg-green-500 transition-colors">
-                See All
-              </button>
-          </div>
-
+        
+        <div className="flex ml-[1105px]">
+          <Button 
+            className="bg-gradient-to-r from-[#2E2AB1] to-[#33A9E0]"
+            onClick={handleSeeAllClick}
+          >
+            See All
+          </Button>
+        </div>
       </div>
 
       <div>
-        <p className="flex  text-3xl text-[#33A9E0] items-center justify-center mt-10">Reviews</p>
+        <p className="flex text-3xl text-[#33A9E0] items-center justify-center mt-10">Reviews</p>
         <div className="flex gap-20 items-center justify-center">
-          <div className="w-1/4 shadow-lg rounded-lg p-10 mb-5 mt-10 ">
-            <p>Reading The Power of Daily Du'a reminded me to be more mindful in my prayers.
-               It felt like it was written just for me. Jazakallah Khair for such uplifting content!
-            </p>
-            <div className="flex flex-col items-end justify-end">
-              <p>
-              A.Abdulla
-            </p>
-            <p className="text-bold">
-              UCSC
-            </p>
+          {[0, 1, 2].map((reviewIndex) => (
+            <div 
+              key={reviewIndex}
+              className="w-1/4 shadow-lg rounded-lg p-10 mb-5 mt-10 cursor-pointer hover:shadow-xl transition-shadow"
+              onClick={() => handleReviewClick(reviewIndex)}
+            >
+              <p>Reading The Power of Daily Du'a reminded me to be more mindful in my prayers.
+                It felt like it was written just for me. Jazakallah Khair for such uplifting content!
+              </p>
+              <div className="flex flex-col items-end justify-end">
+                <p>A.Abdulla</p>
+                <p className="text-bold">UCSC</p>
+              </div>
             </div>
-          </div>
-          <div className="w-1/4 shadow-lg rounded-lg p-10 mb-5 mt-10 ">
-            <p>Reading The Power of Daily Du'a reminded me to be more mindful in my prayers.
-               It felt like it was written just for me. Jazakallah Khair for such uplifting content!
-            </p>
-            <div className="flex flex-col items-end justify-end">
-              <p>
-              A.Abdulla
-            </p>
-            <p className="text-bold">
-              UCSC
-            </p>
-            </div>
-          </div>
-          <div className="w-1/4 shadow-lg rounded-lg p-10 mb-5 mt-10 ">
-            <p>Reading The Power of Daily Du'a reminded me to be more mindful in my prayers.
-               It felt like it was written just for me. Jazakallah Khair for such uplifting content!
-            </p>
-            <div className="flex flex-col items-end justify-end">
-              <p>
-              A.Abdulla
-            </p>
-            <p className="text-bold">
-              UCSC
-            </p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </>
