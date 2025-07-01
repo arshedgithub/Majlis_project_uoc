@@ -43,7 +43,7 @@ export default function Blogs() {
     }
   };
 
-  const handleReadMoreClick = (postId: number) => {
+  const handleReadMoreClick = (postId:number) => {
     router.push(`/blogs/${postId}`);
   };
 
