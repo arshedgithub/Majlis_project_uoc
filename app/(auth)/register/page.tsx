@@ -22,9 +22,22 @@ export default function Register() {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [currentPart, setCurrentPart] = useState<number>(1);
+  const [passwordError, setPasswordError] = useState<string>("");
+
+  const isFirstPartValid = () => {
+    return (
+      fullname.trim() !== "" &&
+      email.trim() !== "" &&
+      gender.trim() !== "" &&
+      faculty.trim() !== "" &&
+      degree.trim() !== ""
+    );
+  };
 
   const handleNext = () => {
-    setCurrentPart(2);
+    if (isFirstPartValid()) {
+      setCurrentPart(2);
+    }
   };
 
   const handleBack = () => {
@@ -33,12 +46,19 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+
     setLoading(true);
-    
+
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Handle actual form submission logic here
       console.log({
         fullname,
@@ -48,9 +68,9 @@ export default function Register() {
         degree,
         contact,
         password,
-        confirmPassword
+        confirmPassword,
       });
-      
+
       // Redirect or show success message
     } catch (error) {
       console.error("Submission error:", error);
@@ -201,7 +221,12 @@ export default function Register() {
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+                    disabled={!isFirstPartValid()}
+                    className={`w-full py-2 rounded-md transition-colors ${
+                      isFirstPartValid()
+                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    }`}
                   >
                     Next
                   </button>
@@ -224,7 +249,15 @@ export default function Register() {
                       placeholder="Enter your contact number"
                       required
                       value={contact}
-                      onChange={(e) => setContact(e.target.value)}
+                      onChange={(e) => {
+                        // Only allow numbers and limit to 10 digits
+                        const value = e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 10);
+                        setContact(value);
+                      }}
+                      pattern="[0-9]{10}"
+                      title="Please enter exactly 10 digits"
                       className="w-full p-1 outline-none text-sm"
                     />
                   </div>
@@ -242,7 +275,10 @@ export default function Register() {
                       placeholder="Enter your password"
                       required
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setPasswordError("");
+                      }}
                       className="w-full p-1 outline-none text-sm"
                     />
                   </div>
@@ -260,10 +296,19 @@ export default function Register() {
                       placeholder="Confirm your password"
                       required
                       value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        setPasswordError("");
+                      }}
                       className="w-full p-1 outline-none text-sm"
                     />
                   </div>
+
+                  {passwordError && (
+                    <p className="text-red-500 text-sm -mt-10">
+                      {passwordError}
+                    </p>
+                  )}
 
                   <div className="flex items-center justify-between">
                     <button
@@ -278,7 +323,7 @@ export default function Register() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-blue-600 font-bold text-white py-2 px-6 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
+                    className="w-full bg-blue-600 mt-12 font-bold text-white py-2 px-6 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
                   >
                     {loading ? (
                       <>
@@ -316,7 +361,7 @@ export default function Register() {
           {/* Footer (only shown in part 2) */}
           {currentPart === 2 && (
             <>
-              <CardFooter className="flex items-center justify-center space-x-2">
+              <CardFooter className="flex items-center justify-center space-x-2 -mt-[30px]">
                 <p className="text-sm text-gray-500 font-bold">
                   Already have an account?{" "}
                   <Link
