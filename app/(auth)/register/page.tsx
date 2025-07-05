@@ -273,14 +273,6 @@ export default function Register() {
                     >
                       ← Back
                     </button>
-                    <p className="flex text-xs text-red-400 items-end justify-end">
-                      <Link
-                        href="/reset"
-                        className="text-red-400 hover:underline font-bold"
-                      >
-                        Forgot password?
-                      </Link>
-                    </p>
                   </div>
 
                   <button
