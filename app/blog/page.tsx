@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function Blogs() {
   const router = useRouter();
@@ -44,14 +43,14 @@ export default function Blogs() {
     }
   };
 
-  const handleReadMoreClick = (postId: number) => {
+  const handleReadMoreClick = (postId:number) => {
     router.push(`/blogs/${postId}`);
   };
 
   const handleSeeAllClick = () => {
     router.push("/blogs/all");
   };
-
+  
   return (
     <>
       <div className="relative flex flex-col w-full h-[475px] bg-gray-100 bg-gradient-to-r from-[#2E2AB1] to-[#33A9E0] overflow-hidden">
@@ -67,7 +66,7 @@ export default function Blogs() {
               Whether it's faith, culture, or current events, we aim to uplift
               and inspire through knowledge and connection.
             </p>
-            <Button
+            <Button 
               className="bg-white text-[#2E2AB1] hover:bg-blue-400 hover:text-white"
               onClick={handleLatestBlogClick}
             >
@@ -83,7 +82,7 @@ export default function Blogs() {
           </div>
         </div>
       </div>
-
+      
       <div className="flex flex-col bg-[#EFF5FD] pb-20" id="latest-insights">
         <h1 className="flex text-4xl items-center justify-center text-[#33A9E0] py-12">
           Latest Insights
@@ -108,7 +107,7 @@ export default function Blogs() {
                 {post.title}
               </p>
               <p className="text-gray-700 mb-6">{post.content}</p>
-              <Button
+              <Button 
                 className="bg-gradient-to-r from-[#2E2AB1] to-[#33A9E0]"
                 onClick={() => handleReadMoreClick(post.id)}
               >
@@ -116,35 +115,29 @@ export default function Blogs() {
               </Button>
             </div>
           </div>
-        ))}
-
+        ))} 
+        
         <div className="flex ml-[1105px]">
-          <Link href="/blog/all">
-            <Button
-              className="bg-gradient-to-r from-[#2E2AB1] to-[#33A9E0]"
-              onClick={handleSeeAllClick}
-            >
-              See All
-            </Button>
-          </Link>
+          <Button 
+            className="bg-gradient-to-r from-[#2E2AB1] to-[#33A9E0]"
+            onClick={handleSeeAllClick}
+          >
+            See All
+          </Button>
         </div>
       </div>
 
       <div>
-        <p className="flex text-3xl text-[#33A9E0] items-center justify-center mt-10">
-          Reviews
-        </p>
+        <p className="flex text-3xl text-[#33A9E0] items-center justify-center mt-10">Reviews</p>
         <div className="flex gap-20 items-center justify-center">
           {[0, 1, 2].map((reviewIndex) => (
-            <div
+            <div 
               key={reviewIndex}
               className="w-1/4 shadow-lg rounded-lg p-10 mb-5 mt-10 cursor-pointer hover:shadow-xl transition-shadow"
               onClick={() => handleReviewClick(reviewIndex)}
             >
-              <p>
-                Reading The Power of Daily Du'a reminded me to be more mindful
-                in my prayers. It felt like it was written just for me.
-                Jazakallah Khair for such uplifting content!
+              <p>Reading The Power of Daily Du'a reminded me to be more mindful in my prayers.
+                It felt like it was written just for me. Jazakallah Khair for such uplifting content!
               </p>
               <div className="flex flex-col items-end justify-end">
                 <p>A.Abdulla</p>
