@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useRouter } from 'next/navigation';
+
 
 import {
   Card,
@@ -15,39 +17,41 @@ import { Loader2 } from "lucide-react";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState('');
+  const router = useRouter();
+
 
   const handleLogin = async (): Promise<void> => {
-    setLoading(true);
+  setLoading(true);
+  try {
+    const response = await fetch("http://localhost:3200/api/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-    try {
-      const response = await fetch("http://localhost:3200/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Login successfully");
-        window.location.href = "/dashboard";
-      } else {
-        alert(data.message || "Invalid credentials.");
-      }
-    } catch (error) {
-      alert("An error occurred while logging in. Please try again.");
-      console.error("Login error:", error);
-    } finally {
-      setLoading(false);
+    // Check if response is JSON
+    const contentType = response.headers.get("content-type");
+    if (!contentType?.includes("application/json")) {
+      const text = await response.text();
+      throw new Error(`Expected JSON, got: ${text.slice(0, 100)}...`);
     }
-  };
+
+    const data = await response.json();
+    if (response.ok) {
+      router.push("/dashboard"); // Use Next.js router instead of window.location
+    } else {
+      setError(data.message || "Invalid credentials");
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    setError("Failed to connect to server. Check the URL and try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -114,8 +118,8 @@ export default function Login() {
                     id="username"
                     placeholder="Enter your username"
                     required
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full p-1 outline-none text-sm"
                   />
                 </div>
