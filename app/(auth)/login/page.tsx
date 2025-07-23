@@ -3,8 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useRouter } from 'next/navigation';
-
+import { useRouter } from "next/navigation";
 
 import {
   Card,
@@ -19,39 +18,39 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const router = useRouter();
 
-
   const handleLogin = async (): Promise<void> => {
-  setLoading(true);
-  try {
-    const response = await fetch("http://localhost:3200/api/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    setLoading(true);
+    setError('');
+    try {
+      console.log('Attempting login with:', { email, password });
 
-    // Check if response is JSON
-    const contentType = response.headers.get("content-type");
-    if (!contentType?.includes("application/json")) {
-      const text = await response.text();
-      throw new Error(`Expected JSON, got: ${text.slice(0, 100)}...`);
-    }
+      const response = await fetch("http://localhost:3000/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await response.json();
-    if (response.ok) {
-      router.push("/dashboard"); // Use Next.js router instead of window.location
-    } else {
-      setError(data.message || "Invalid credentials");
+      console.log('Response status:', response.status);
+
+      const data = await response.json();
+      console.log('Response data:', data);
+
+      if (response.ok) {
+        console.log('Login successful, redirecting...');
+        router.push("/admin");
+      } else {
+        setError(data.message || "Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("Failed to connect to server. Check the URL and try again.");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Login error:", error);
-    setError("Failed to connect to server. Check the URL and try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -84,7 +83,7 @@ export default function Login() {
 
           {/* Centered Content */}
           <div className="text-center">
-            <p className="text-white text-4xl font-medium"> 
+            <p className="text-white text-4xl font-medium">
               Together in Faith, Stronger in Unity
             </p>
           </div>
@@ -108,15 +107,15 @@ export default function Login() {
               >
                 <div className="relative border border-gray-300 rounded-md pt-1 pb-0 px-1 focus-within:ring-1 focus-within:ring-gray-300 focus-within:border-gray-300 h-[42px]">
                   <label
-                    htmlFor="username"
+                    htmlFor="email"
                     className="absolute -top-2 left-3 bg-white px-1 text-xs text-gray-600"
                   >
-                    Username
+                    Email
                   </label>
                   <input
-                    type="text"
-                    id="username"
-                    placeholder="Enter your username"
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
