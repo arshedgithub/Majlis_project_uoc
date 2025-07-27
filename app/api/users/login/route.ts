@@ -1,111 +1,103 @@
-import { addDoc } from 'firebase/firestore';
-import { NextResponse } from 'next/server';
-import { AuthService } from '@/services/auth.service';
-import { db } from '@/config';
-import { collection, getDocs } from 'firebase/firestore';
+import { NextRequest, NextResponse } from "next/server";
+import { AuthService } from "@/services/auth.service";
+import { SignInDto } from "../../../../types/dto/signin.dto";
+import jwt from "jsonwebtoken";
+import bcryptjs from "bcryptjs";
 
-export async function GET() {
+export async function POST(request: NextRequest) {
   try {
-    const usersRef = collection(db, 'users');
-    const snapshot = await getDocs(usersRef);
-    const users = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    
-    return NextResponse.json({ users }, { status: 200 });
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch users' },
-      { status: 500 }
-    );
-  }
-}
-// export  async function POST(request: Request) {
-//   try {
-//     // 1. Verify Content-Type
-//     const contentType = request.headers.get('content-type');
-//     if (!contentType?.includes('application/json')) {
-//       return NextResponse.json(
-//         { message: 'Invalid content type, expected application/json' },
-//         { status: 400 }
-//       );
-//     }
+    const reqBody = await request.json();
+    const signInDto: SignInDto = {
+      email: reqBody.email,
+      password: reqBody.password,
+    };
 
-//     // 2. Parse request body
-//     const signInDto = await request.json();
-    
-//     // 3. Validate required fields
-//     if (!signInDto.email || !signInDto.password) {
-//       return NextResponse.json(
-//         { message: 'Email and password are required' },
-//         { status: 400 }
-//       );
-//     }
-
-//     // 4. Authenticate user
-//     const authResponse = await AuthService.signIn(signInDto);
-
-//     // 5. Return successful response
-//     return NextResponse.json(
-//       {
-//         message: "Login successful",
-//         token: authResponse.token,
-//         user: {
-//           email: authResponse.user.email,
-//           name: authResponse.user.name
-//         }
-//       },
-//       { status: 200 }
-//     );
-    
-//   } catch (error: any) {
-//     // 6. Handle errors consistently
-//     console.error('Login error:', error);
-//     return NextResponse.json(
-//       { 
-//         message: error.message || 'Authentication failed',
-//         success: false
-//       },
-//       { 
-//         status: 401,
-//         headers: {
-//           'Content-Type': 'application/json',
-//         }
-//       }
-//     );
-//   }
-// }
-
-
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const usersRef = collection(db, 'users');
-    
-    // Add validation here
-    if (!body.email || !body.name) {
+    // Validations
+    if (!signInDto.email || !signInDto.password) {
       return NextResponse.json(
-        { error: 'Email and name are required' },
+        { message: "Email and password are required" },
         { status: 400 }
       );
     }
 
-    const docRef = await addDoc(usersRef, {
-      ...body,
-      createdAt: new Date().toISOString()
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(signInDto.email)) {
+      return NextResponse.json(
+        { message: "Invalid email format" },
+        { status: 400 }
+      );
+    }
+
+    // Check user existence
+    const existingUser = AuthService.findUserByEmail(signInDto.email);
+    if (!existingUser) {
+      return NextResponse.json(
+        { message: "User not found with this email" },
+        { status: 400 }
+      );
+    }
+
+    // Compare password (if using bcrypt)
+    const isPasswordValid = await bcryptjs.compare(signInDto.password, existingUser.password);
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { message: "Incorrect password" },
+        { status: 401 }
+      );
+    }
+
+    // Create token data
+    const tokenData = {
+      userId: existingUser.id,
+      email: existingUser.email,
+      userType: existingUser.userType,
+    };
+
+    // Create token
+    const token = jwt.sign(tokenData, process.env.JWT_SECRET!, {
+      expiresIn: "1d",
     });
 
-    return NextResponse.json(
-      { id: docRef.id, message: 'User created successfully' },
-      { status: 201 }
+    // Prepare response
+    const response = NextResponse.json(
+      {
+        message: "Sign-in successful",
+        user: {
+          id: existingUser.id,
+          name: existingUser.name,
+          email: existingUser.email,
+          userType: existingUser.userType,
+        },
+        token,
+      },
+      { status: 200 }
     );
+    response.cookies.set("token", token, { httpOnly: true });
+    return response;
   } catch (error) {
-    console.error('Error creating user:', error);
+    console.error("Error fetching user : ", error);
     return NextResponse.json(
-      { error: 'Failed to create user' },
+      { message: "Failed to fetch users" },
       { status: 500 }
     );
   }
 }
+// export async function GET() {
+//   try {
+//     const usersRef = collection(db, 'users');
+//     const snapshot = await getDocs(usersRef);
+//     const users = snapshot.docs.map(doc => ({
+//       id: doc.id,
+//       ...doc.data()
+//     }));
+
+//     return NextResponse.json({ users }, { status: 200 });
+//   } catch (error) {
+//     console.error('Error fetching users:', error);
+//     return NextResponse.json(
+//       { error: 'Failed to fetch users' },
+//       { status: 500 }
+//     );
+//   }
+// }
