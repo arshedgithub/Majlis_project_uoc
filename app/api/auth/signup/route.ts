@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { userService } from '@/services/user.service';
 import { User, UserStatus, UserType } from '@/types';
+import { userService } from '@/services';
 
 export async function POST(request: NextRequest) {
   try {
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       isPhoneVerified: false
     }
     const result = await userService.signUp(newUser, password);
-    
+
     return NextResponse.json({
       success: true,
       message: 'Sign up successful',
