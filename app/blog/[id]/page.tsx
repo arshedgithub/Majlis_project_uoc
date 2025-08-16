@@ -64,10 +64,10 @@ export default function ViewBlog() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 mb-6">
-      <div className="w-full">
+    <div className="min-h-screen flex flex-col items-center justify-center">
+      <div className="w-full py-5 px-5 md:px-12 lg:px-28">
         <Button
-          className="justify-start ml-6 mr-6 mt-4 bg-black hover:bg-gray-700"
+          className="justify-start bg-black hover:bg-gray-700"
           onClick={() => router.replace('/blog/all')}>
           <ArrowLeft />Back
         </Button>
