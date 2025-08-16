@@ -1,11 +1,15 @@
+import { UserStatus, UserType } from '../enums';
+
 export interface User {
     id: string;
+    firebaseUid: string;
     name: string;
     email: string;
-    isAdmin: boolean;
-    isActive: boolean;
-    isEmailVerified: boolean;
-    isPhoneVerified: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    password: string
+    userType: UserType;
+    status: UserStatus;
+    isEmailVerified?: boolean;
+    isPhoneVerified?: boolean;
+    createdAt: string;
+    updatedAt: string;
 }
