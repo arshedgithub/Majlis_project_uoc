@@ -1,10 +1,11 @@
 import { BlogCategory, BlogStatus } from "../enums";
 
 export interface Blog {
-    id?: string;
+    id: string;
     title: string;
     content: string;
-    categroy: BlogCategory
+    category: BlogCategory;
+    imageUrl?: string;
     authorId: string;
     tags?: string[];
     status?: BlogStatus;
