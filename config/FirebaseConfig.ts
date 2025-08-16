@@ -11,15 +11,11 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID,
 };
 
-console.log(firebaseConfig)
-
 // Initialize Firebase only if it hasn't been initialized
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-// Initialize Firestore
+// Initialize Firestore and auth
 const db = getFirestore(app);
-
-// Initialize Auth
 const auth = getAuth(app);
 
 export { db, auth, app };

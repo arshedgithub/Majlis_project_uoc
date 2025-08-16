@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-// import { userService } from '@/services/user.service';
-import { UserType } from '@/types';
-import users from '@/db/users.json'
+import { userService } from '@/services/user.service';
+import { User, UserStatus, UserType } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,8 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already exists
-    // const existingUser = await userService.getUserByEmail(email);
-    const existingUser = users.filter(user => user.email == email)
+    const existingUser = await userService.getUserByEmail(email);
     if (existingUser) {
       return NextResponse.json(
         {
@@ -51,33 +49,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create user
-    // const result = await userService.signUp(
-    //   { name, email, userType },
-    //   password
-    // );
-
-    const newUser = {
-      id: '5',
+    const newUser: User = {
       name,
       email,
       password,
-      userType: "student",
-      status: "Approved",
+      userType: UserType.STUDENT,
+      status: UserStatus.PENDING,
       isEmailVerified: false,
       isPhoneVerified: false
     }
-
-    users.push(newUser);
-
+    const result = await userService.signUp(newUser, password);
+    
     return NextResponse.json({
       success: true,
       message: 'Sign up successful',
       data: {
-        // user: result.user,
-        // token: result.token
-        user: newUser,
-        token: "temp token"
+        user: result.user,
+        token: result.token
       }
     });
 

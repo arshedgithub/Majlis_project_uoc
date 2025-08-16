@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { blogService } from '@/services';
 // import { AuthenticatedRequest } from '@/middlewares/firebase-auth.middleware';
 import { Blog } from '@/types';
-import blogs from '@/db/blogs.json'
 
 export async function GET(request: NextRequest) {
   try {
@@ -69,8 +68,7 @@ export async function POST(request: NextRequest) {
     // const authenticatedRequest = request as AuthenticatedRequest;
     // const user = authenticatedRequest.user!;
 
-    const blogData = {
-      id: "4",
+    const blogData: Blog = {
       title,
       content,
       category,
@@ -81,13 +79,12 @@ export async function POST(request: NextRequest) {
     };
 
     const blogId = await blogService.createBlog(blogData);
-    blogs.push(blogData);
 
 
     return NextResponse.json({
       success: true,
       message: 'Blog created successfully',
-      data: { id: blogData.id }
+      data: { id: blogId }
     }, { status: 201 });
   } catch (error: any) {
     console.error('Create blog error:', error);

@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-// import { userService } from '@/services/user.service';
-
-
-import users from '@/db/users.json';
+import { userService } from '@/services';
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,27 +27,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Authenticate user
-    // const result = await userService.signIn(email, password);
-
-    const user = users.filter(user => user.email == email && user.password == password);
-    if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Authentication Failed'
-        },
-        { status: 400 }
-      );
-    }
+    const result = await userService.signIn(email, password);
 
     return NextResponse.json({
       success: true,
       message: 'Sign in successful',
       data: {
-        // user: result.user,
-        // token: result.token
-        user,
-        token: "temp"
+        user: result.user,
+        token: result.token
       }
     });
 
