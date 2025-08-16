@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { AuthenticatedRequest } from './auth.middleware';
+import { AuthenticatedRequest } from './firebase-auth.middleware';
 import { UserType } from '@/types';
 
 export const validatePermission = (allowedTypes: UserType[]) => {
@@ -41,4 +41,4 @@ export const isAnyAdmin = validatePermission([UserType.ADMIN, UserType.SUPER_ADM
 export const isStudent = validatePermission([UserType.STUDENT]);
 export const isLecturer = validatePermission([UserType.LECTURER]);
 export const isAlumini = validatePermission([UserType.ALUMINI]);
-export const isRegisteredUser = validatePermission([UserType.SUPER_ADMIN, UserType.ADMIN, UserType.LECTURER, UserType.LECTURER, UserType.STUDENT]); 
+export const isRegisteredUser = validatePermission([UserType.SUPER_ADMIN, UserType.ADMIN, UserType.LECTURER, UserType.STUDENT, UserType.ALUMINI]); 

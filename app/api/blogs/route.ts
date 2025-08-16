@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 // import { authenticateFirebase, isAnyAdmin } from '@/middlewares';
-// import { blogService } from '@/services';
+import { blogService } from '@/services';
 // import { AuthenticatedRequest } from '@/middlewares/firebase-auth.middleware';
 import { Blog } from '@/types';
 import blogs from '@/db/blogs.json'
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       }
     };
 
-    // const blogs = await blogService.getAllBlogs(options);
+    const blogs = await blogService.getAllBlogs(options);
 
     return NextResponse.json({
       success: true,
@@ -39,6 +39,8 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+
+
 }
 
 export async function POST(request: NextRequest) {
@@ -78,7 +80,7 @@ export async function POST(request: NextRequest) {
       isPublished: isPublished ?? false
     };
 
-    // const blogId = await blogService.createBlog(blogData);
+    const blogId = await blogService.createBlog(blogData);
     blogs.push(blogData);
 
 
