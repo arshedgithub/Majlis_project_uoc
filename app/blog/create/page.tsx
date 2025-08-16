@@ -64,30 +64,32 @@ export default function CreateBlog() {
     try {
       const formData = new FormData();
       formData.append("title", title);
+      console.log(title)
+      console.log(formData.getAll('title'))
       formData.append("author", author);
       formData.append("content", content);
       if (image) {
         formData.append("image", image);
       }
-
-      const response = await fetch("http://localhost:3200/api/blogs", {
+      console.log(formData)
+      const response = await fetch("http://localhost:3000/api/blogs", {
         method: "POST",
         body: formData,
       });
-
+      console.log(await response)
       const data = await response.json();
       setLoading(false);
 
-      if (response.ok) {
-        alert("Blog created successfully!");
-        setTitle("");
-        setAuthor("");
-        setContent("");
-        setImage(null);
-        setPreviewUrl(null);
-      } else {
-        alert(data.message || "Failed to create blog.");
-      }
+      // if (response.ok) {
+      //   alert("Blog created successfully!");
+      //   setTitle("");
+      //   setAuthor("");
+      //   setContent("");
+      //   setImage(null);
+      //   setPreviewUrl(null);
+      // } else {
+      //   alert(data.message || "Failed to create blog.");
+      // }
     } catch (error) {
       console.error("Error creating blog:", error);
       alert("An error occurred.");

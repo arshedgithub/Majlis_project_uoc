@@ -22,11 +22,13 @@ export default function Login() {
   const router = useRouter();
 
   const handleLogin = async (): Promise<void> => {
+    console.log(router)
+    console.log(error)
     setLoading(true);
     setError('');
     try {
       console.log('Attempting login with:', { email, password });
-
+      setLoading(false)
       const response = await fetch("http://localhost:3000/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -34,22 +36,22 @@ export default function Login() {
       });
 
       console.log('Response status:', response.status);
-
+      
       const data = await response.json();
       console.log('Response data:', data);
 
-      if (response.ok) {
-        console.log('Login successful, redirecting...');
-        router.push("/admin");
-      } else {
-        setError(data.message || "Invalid credentials");
-      }
+    //   if (response.ok) {
+    //     console.log('Login successful, redirecting...');
+    //     router.push("/admin");
+    //   } else {
+    //     setError(data.message || "Invalid credentials");
+    //   }
     } catch (error) {
       console.error("Login error:", error);
       setError("Failed to connect to server. Check the URL and try again.");
-    } finally {
-      setLoading(false);
-    }
+     }// finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
